@@ -1,0 +1,14 @@
+.EditBox {
+    background-color: #fff;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 50px;
+    padding: 20px;
+    left: 50%;
+    /* height: px; */
+    /* width: 30%; */
+}
+
+.ProfileBox {
+    margin-top: 5%;
+}

@@ -1,0 +1,56 @@
+.reviewText {
+    font-family: DM Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 31px;
+    color: #8d8d8d;
+}
+
+.personName {
+    font-family: DM Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    color: #000000;
+    float: top;
+    margin-left: 40%;
+    margin-bottom: 5px;
+}
+
+.personOccupation {
+    font-family: DM Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 17px;
+    color: #979797;
+    float: top;
+    margin-left: 40%;
+    margin-top: 5px;
+}
+
+.profilePhoto {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    float: left;
+    object-fit: cover;
+}
+
+.reviewContainer {
+    position: relative;
+    height: 400px;
+    width: 350px;
+    top: 450px;
+    float: left;
+    margin-right: 10px;
+}
+
+.userInfo {
+    width: 300px;
+}
+
+.ReviewBox {
+    width: fit-content;
+    margin: 0 auto;
+}
