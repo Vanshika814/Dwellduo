@@ -29,20 +29,6 @@ To get started with DwellDuo, simply follow these steps:
 ![connect](/screenshots/e.jpeg)
 ![connect](/screenshots/f.jpeg)
 
-## Meet the Team
-
-DwellDuo is brought to you by a passionate team dedicated to revolutionizing roommate matchmaking:
-
-- **Dhruv Chaudhary:** Lead Developer
-- **Vanshika Agarwal:** UI/UX Designer
-- **Lakshit Agarwal:** Lead Developer
-- **Radha Garg:** Strategist
-
-## Special Thanks
-
-We extend our heartfelt gratitude to Dr. Umesh Gupta, SMIEEE, whose invaluable support and guidance have been instrumental in bringing DwellDuo from concept to reality.
-
-
 ## Stay Connected
 
 Stay updated with the latest news and developments from DwellDuo.
