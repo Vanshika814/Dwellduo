@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# MySQL Root Password Reset Script for macOS
+# This script will help you reset your MySQL root password
+
+echo "=========================================="
+echo "MySQL Root Password Reset Guide"
+echo "=========================================="
+echo ""
+echo "Follow these steps to reset your MySQL root password:"
+echo ""
+echo "STEP 1: Stop MySQL Server"
+echo "  sudo /usr/local/mysql/support-files/mysql.server stop"
+echo ""
+echo "STEP 2: Start MySQL in Safe Mode (skip grant tables)"
+echo "  sudo /usr/local/mysql/bin/mysqld_safe --skip-grant-tables &"
+echo ""
+echo "STEP 3: Connect to MySQL (no password needed)"
+echo "  /usr/local/mysql/bin/mysql -u root"
+echo ""
+echo "STEP 4: Once connected, run these SQL commands:"
+echo "  FLUSH PRIVILEGES;"
+echo "  ALTER USER 'root'@'localhost' IDENTIFIED BY 'your_new_password';"
+echo "  FLUSH PRIVILEGES;"
+echo "  EXIT;"
+echo ""
+echo "STEP 5: Stop the safe mode MySQL and restart normally"
+echo "  sudo /usr/local/mysql/support-files/mysql.server stop"
+echo "  sudo /usr/local/mysql/support-files/mysql.server start"
+echo ""
+echo "STEP 6: Test the new password"
+echo "  /usr/local/mysql/bin/mysql -u root -p"
+echo ""
+echo "=========================================="
+echo "Alternative: Use MySQL Workbench or phpMyAdmin if installed"
+echo "=========================================="
+

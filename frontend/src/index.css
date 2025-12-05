@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes customer-carousel {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.customer-carousel-track {
+  display: inline-flex;
+  animation: customer-carousel 25s linear infinite;
+}
+
