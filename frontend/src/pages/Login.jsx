@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Navbar from "../components/Navbar";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -11,7 +12,7 @@ export default function Login() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
       if (token) {
         navigate("/");
       }
@@ -26,10 +27,11 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/login", form);
-      const token = response?.data?.token;
-      if (token) {
-        localStorage.setItem("token", token);
+      const response = await api.post("/auth/login", form);
+      const { accessToken, refreshToken } = response?.data?.data || {};
+      if (accessToken && refreshToken) {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
       }
       alert("Logged in successfully!");
       navigate("/");
@@ -40,8 +42,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-sky-50 px-4">
-      <form
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-sky-50">
+      <Navbar />
+      <div className="flex items-center justify-center px-4 py-12">
+        <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 bg-white/90 border border-slate-200 rounded-2xl p-8 shadow-xl"
       >
@@ -86,6 +90,7 @@ export default function Login() {
           Login
         </button>
       </form>
+      </div>
     </div>
   );
 }

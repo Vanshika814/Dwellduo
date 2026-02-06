@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Navbar from "../components/Navbar";
 
 export default function Register() {
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    password_confirmation: "",
+    confirmPassword: "",
   });
   const navigate = useNavigate();
 
@@ -19,10 +20,11 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/register", form);
-      const token = response?.data?.token;
-      if (token) {
-        localStorage.setItem("token", token);
+      const response = await api.post("/auth/register", form);
+      const { accessToken, refreshToken } = response?.data?.data || {};
+      if (accessToken && refreshToken) {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
       }
       alert("Registered successfully!");
       navigate("/");
@@ -38,8 +40,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-sky-50 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-sky-50">
+      <Navbar />
+      <div className="flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
         <div className="bg-white/90 border border-slate-200 rounded-2xl shadow-2xl p-6 sm:p-8">
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-2 text-center">
             Create Your Account
@@ -108,17 +112,17 @@ export default function Register() {
 
             <div>
               <label
-                htmlFor="password_confirmation"
+                htmlFor="confirmPassword"
                 className="block text-xs font-medium text-slate-600 mb-1"
               >
                 Confirm Password
               </label>
               <input
-                id="password_confirmation"
-                name="password_confirmation"
+                id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 required
-                value={form.password_confirmation}
+                value={form.confirmPassword}
                 onChange={handleChange}
                 className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
                 placeholder="••••••••"
@@ -142,6 +146,7 @@ export default function Register() {
               Login
             </Link>
           </p>
+        </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,17 @@
+# Production Profile Configuration
+spring:
+  jpa:
+    show-sql: false
+    
+  devtools:
+    restart:
+      enabled: false
+      
+logging:
+  level:
+    root: WARN
+    com.dwellduo: INFO
+    org.springframework.security: WARN
+
+
+

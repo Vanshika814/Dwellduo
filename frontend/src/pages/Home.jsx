@@ -1,18 +1,10 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
+import HeroSection from "../components/HeroSection";
 export default function Home() {
   const hasToken =
-    typeof window !== "undefined" && !!localStorage.getItem("token");
-
-  const customers = [
-    { name: "Aarav", city: "Delhi", img: "https://i.pravatar.cc/100?img=12" },
-    { name: "Kiara", city: "Mumbai", img: "https://i.pravatar.cc/100?img=32" },
-    { name: "Rohan", city: "Bangalore", img: "https://i.pravatar.cc/100?img=22" },
-    { name: "Ananya", city: "Pune", img: "https://i.pravatar.cc/100?img=45" },
-    { name: "Dev", city: "Hyderabad", img: "https://i.pravatar.cc/100?img=5" },
-  ];
+    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
   return (
     <div className="relative bg-slate-50 text-slate-900">
@@ -22,96 +14,179 @@ export default function Home() {
       <Navbar />
 
       {/* Hero section - full viewport height */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-12">
-        <div className="max-w-5xl w-full grid gap-10 md:grid-cols-2 items-center">
-          {/* Text content */}
-          <div className="space-y-6">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-sky-500">
-              Dwell Duo
-            </p>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-slate-900">
-              Find Your Perfect Roommate
-            </h1>
-            <p className="text-sm md:text-base text-slate-600 max-w-md">
-              Smart matchmaking based on compatibility, lifestyle, and preferences.
-              Discover roommates that feel less like strangers and more like friends.
-            </p>
-
-            {!hasToken && (
-              <div className="flex flex-wrap gap-3 pt-2">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center justify-center rounded-full bg-sky-500 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-400"
-                >
-                  Get Started
-                </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center justify-center rounded-full border border-violet-300 bg-white/70 px-6 py-2.5 text-sm font-medium text-violet-700 hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-300"
-                >
-                  Login
-                </Link>
-              </div>
-            )}
+      <HeroSection />
+      
+      {/* Container 2*/}
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center bg-slate-200 p-6">
+          <div className="text-4xl text-wrap p-4">
+            <h1>Getting Rental Agreement done easily in just few clicks with Dwell Duo</h1>
           </div>
-          {/* Illustration / placeholder */}
-          <div className="relative">
-            <div className="mx-auto max-h-full w-64 md:h-72 md:w-72 rounded-3xl bg-gradient-to-br from-sky-400 via-violet-500 to-fuchsia-500 shadow-2xl flex items-center justify-center">
-              <div className="h-40 w-40 rounded-2xl bg-white/90 backdrop-blur-sm border border-white/60 flex flex-col items-center justify-center space-y-2">
-                <div className="flex -space-x-3">
-                  <span className="h-8 w-8 rounded-full bg-sky-200 border border-white" />
-                  <span className="h-8 w-8 rounded-full bg-violet-200 border border-white" />
-                  <span className="h-8 w-8 rounded-full bg-fuchsia-200 border border-white" />
-                </div>
-                <p className="text-xs font-medium text-slate-700">
-                  Compatible matches
-                </p>
-                <p className="text-[11px] text-slate-500">
-                  Lifestyle • Budget • Location
-                </p>
-              </div>
-            </div>
+          <img src={'/pic1.jpeg'} alt="Rental Agreement" className="rounded-2xl shadow-lg" />
+        </div>  
+
+        {/* Container 3*/}
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center p-6">
+          <img src={'/pic2.jpeg'} alt="Find Roommate" className="rounded-2xl shadow-lg" />
+          <div className="text-4xl text-wrap p-4">
+            <h1>Find your perfect roommate with Dwell Duo</h1>
           </div>
         </div>
-      </section>
-
-      {/* Moving customer carousel - visible on scroll */}
-      <section className="w-full max-w-5xl mx-auto px-4 py-12">
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 shadow-md">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-3">
-            Roomies who love Dwell Duo
-          </p>
-          <div className="relative overflow-hidden">
-            <div className="customer-carousel-track gap-4">
-              {[...customers, ...customers].map((person, idx) => (
-                <div
-                  key={`${person.name}-${idx}`}
-                  className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm"
-                >
-                  <div className="h-8 w-8 rounded-full bg-slate-200 overflow-hidden">
-                    <img
-                      src={person.img}
-                      alt={person.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium text-slate-900">
-                      {person.name}
-                    </span>
-                    <span className="text-[11px] text-slate-500">
-                      {person.city}
-                    </span>
-                  </div>
+        {/* Container 4 cities*/}
+        <div className="bg-slate-200 p-9">
+            <h1 className="text-4xl text-center mb-8">View rooms in Popular cities</h1>
+            <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 p-8">
+              {/* Mumbai */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/mumbai.jpeg'} 
+                  alt="Mumbai"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Mumbai</h2>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+              </div>
 
+              {/* Noida */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/noida.jpeg'} 
+                  alt="Noida"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Noida</h2>
+                </div>
+              </div>
+
+              {/* Bangalore */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/banglore.jpeg'} 
+                  alt="Bangalore"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Bangalore</h2>
+                </div>
+              </div>
+
+              {/* Pune */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/pune.jpeg'} 
+                  alt="Pune"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Pune</h2>
+                </div>
+              </div>
+
+              {/* Hyderabad */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/hyderabad.jpeg'} 
+                  alt="Hyderabad"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Hyderabad</h2>
+                </div>
+              </div>
+
+              {/* Jaipur */}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/jaipur.jpeg'} 
+                  alt="Jaipur"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Jaipur</h2>
+                </div>
+              </div>
+              {/* Kolkata*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/kolkata.jpeg'} 
+                  alt="Kolkata"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Kolkata</h2>
+                </div>
+              </div>
+              {/* Chennai*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/chennai.jpeg'} 
+                  alt="Chennai"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Chennai</h2>
+                </div>
+              </div>
+              {/* Ahmedabad*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/ahmedabad.jpeg'} 
+                  alt="Ahmedabad"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Ahmedabad</h2>
+                </div>
+              </div>
+              {/* Delhi*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/delhi.jpeg'} 
+                  alt="Delhi"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Delhi</h2>
+                </div>
+              </div>
+              {/* Nagpur*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/nagpur.jpeg'} 
+                  alt="Nagpur"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Nagpur</h2>
+                </div>
+              </div>
+              {/* Surat*/}
+              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <img 
+                  src={'/surat.jpeg'} 
+                  alt="Surat"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <h2 className="text-xl font-bold text-white drop-shadow-lg">Surat</h2>
+                </div>
+              </div>
+            </div>
+      </div>
       <Footer />
     </div>
   );
 }
-

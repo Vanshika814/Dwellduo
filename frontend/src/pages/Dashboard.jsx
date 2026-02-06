@@ -11,7 +11,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
     if (!token) {
       setError("No token found. Please log in.");
@@ -21,12 +21,12 @@ export default function Dashboard() {
 
     const fetchUser = async () => {
       try {
-        const response = await api.get("/user", {
+        const response = await api.get("/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setUser(response.data);
+        setUser(response.data?.data);
       } catch (err) {
         console.error(err);
         setError("Session expired or invalid token. Please log in again.");
@@ -41,7 +41,7 @@ export default function Dashboard() {
   useEffect(() => {
     setMatchesLoading(true);
     api.get("/matches")
-      .then((res) => setMatches(res.data))
+      .then((res) => setMatches(res.data?.data || []))
       .finally(() => setMatchesLoading(false));
   }, []);
 
@@ -51,13 +51,14 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      await api.post("/logout");
+      await api.post("/auth/logout");
     } catch (err) {
       console.error("Error during logout:", err);
       // Even if the API call fails, clear token locally to force re-auth
     } finally {
       if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
       }
       navigate("/login");
     }

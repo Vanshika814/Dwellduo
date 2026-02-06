@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: dwellduo-backend
+    
+  # Database Configuration (PostgreSQL)
+  datasource:
+    url: jdbc:postgresql://db.sdstoofdwtawwigomnya.supabase.co:5432/postgres
+    username: postgres
+    password: Maccyy@#1234
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate 
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        
+  # Flyway Migration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    out-of-order: false  # Disable after cleanup
+    clean-disabled: false  # Allow flyway:clean command
+    locations: classpath:db/migration
+    
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000
+      
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000  # 1 hour in milliseconds
+      
+  # File Upload Configuration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+      
+  # Async Configuration
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 100
+      thread-name-prefix: async-task-
+      
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+    
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-in-production-make-it-long-and-secure}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 hours in milliseconds
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days
+  
+# Cloudinary Configuration
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:dgfirvf4b}
+  api-key: ${CLOUDINARY_API_KEY:797317251744685}
+  api-secret: ${CLOUDINARY_API_SECRET:7SogiW_8BY44qdNJr0Ivt_jYSXY}
+  upload-folder: ${CLOUDINARY_UPLOAD_FOLDER:dwellduo/profile_images}
+  
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+  
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.dwellduo: ${LOG_LEVEL:DEBUG}
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: ${SHOW_SQL:false}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/dwellduo.log
+    max-size: 10MB
+    max-history: 30
