@@ -138,7 +138,8 @@ Follow these instructions to get the project up and running on your local machin
 
 ## 📸 Screenshots
 
-[**Add screenshots of the application here**]
+![frontend](https://github.com/user-attachments/assets/21a0ffaf-28ad-4877-9213-6495a4967545)
+
 
 ## 🤝 Contributing
 
@@ -163,3 +164,4 @@ Vanshika Agarwal - vanshikaagarwal781@gmail.com
 Thanks for checking out this project! We hope you find it useful.
 
 This is written by [readme.ai](https://readme-generator-phi.vercel.app/).
+
