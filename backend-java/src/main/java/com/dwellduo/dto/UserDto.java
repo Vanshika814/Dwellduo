@@ -62,6 +62,9 @@ public class UserDto {
     private Boolean profileCompleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+    private Double latitude;
+    private Double longitude;
 }
 
 

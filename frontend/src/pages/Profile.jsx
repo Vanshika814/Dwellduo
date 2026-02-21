@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile, updateUserProfile, clearUpdateSuccess, clearError } from "../store/slices/authSlice";
 import Navbar from "../components/Navbar";
 import ImageUpload from "../components/ImageUpload";
+import LocationSearch from "../components/LocationSearch";
 
 export default function Profile() {
+  const dispatch = useDispatch();
+  const { user, loading, error: authError, updateSuccess } = useSelector((state) => state.auth);
+  
   const [form, setForm] = useState({
     email: "",
     name: "",
@@ -16,43 +21,58 @@ export default function Profile() {
     budget: "",
     location_preference: "",
     gender_preference: "",
+    latitude: null,
+    longitude: null,
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
+  // Fetch user profile on mount
   useEffect(() => {
-    let mounted = true;
-    setLoading(true);
-    api
-      .get("/users/me")
-      .then((res) => {
-        if (!mounted) return;
-        const data = res.data?.data || {};
-        setForm({
-          email: data.email || "",
-          name: data.name || "",
-          age: data.age ?? "",
-          gender: data.gender || "",
-          phone: data.phone || "",
-          city: data.city || "",
-          avatar_url: data.profileImage || "",
-          budget: data.budget || "",
-          location_preference: data.locationPreference || "",
-          gender_preference: data.genderPreference || "",
-        });
-      })
-      .catch(() => {
-        if (mounted) setError("Could not load profile. Please try again.");
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
+
+  // Update form when user data is loaded
+  useEffect(() => {
+    if (user) {
+      setForm({
+        email: user.email || "",
+        name: user.name || "",
+        age: user.age ?? "",
+        gender: user.gender || "",
+        phone: user.phone || "",
+        city: user.city || "",
+        avatar_url: user.profileImage || "",
+        budget: user.budget || "",
+        location_preference: user.locationPreference || "",
+        gender_preference: user.genderPreference || "",
+        latitude: user.latitude || null,
+        longitude: user.longitude || null,
       });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    }
+  }, [user]);
+
+  // Handle update success
+  useEffect(() => {
+    if (updateSuccess) {
+      setMessage("Profile updated successfully!");
+      setSaving(false);
+      setTimeout(() => {
+        setMessage("");
+        dispatch(clearUpdateSuccess());
+      }, 3000);
+    }
+  }, [updateSuccess, dispatch]);
+
+  // Handle errors
+  useEffect(() => {
+    if (authError) {
+      setSaving(false);
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 3000);
+    }
+  }, [authError, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,31 +83,21 @@ export default function Profile() {
     e.preventDefault();
     setSaving(true);
     setMessage("");
-    setError("");
-    try {
-      await api.put("/users/me", {
-        email: form.email,
-        name: form.name,
-        age: form.age === "" ? null : Number(form.age),
-        gender: form.gender || null,
-        phone: form.phone,
-        city: form.city,
-        profileImage: form.avatar_url,
-        budget: form.budget,
-        locationPreference: form.location_preference,
-        genderPreference: form.gender_preference || null,
-      });
-      setMessage("Profile updated successfully.");
-    } catch (err) {
-      console.error(err);
-      if (err.response?.status === 422) {
-        setError("Please check your inputs and try again.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setSaving(false);
-    }
+    
+    dispatch(updateUserProfile({
+      email: form.email,
+      name: form.name,
+      age: form.age === "" ? null : Number(form.age),
+      gender: form.gender || null,
+      phone: form.phone,
+      city: form.city,
+      profileImage: form.avatar_url,
+      budget: form.budget,
+      locationPreference: form.location_preference,
+      genderPreference: form.gender_preference || null,
+      latitude: form.latitude,
+      longitude: form.longitude,
+    }));
   };
 
   const handleImageUploadSuccess = (imageUrl) => {
@@ -100,10 +110,18 @@ export default function Profile() {
     "w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-200";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-sky-50">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#FAFAFA]">
+      <div className="absolute top-[-150px] md:top-[-350px] left-1/2 -translate-x-1/2 
+        w-[800px] h-[300px] md:w-[1600px] md:h-[500px]
+        bg-[#EADEC2] 
+        rounded-[50%/40%]
+        blur-[80px] md:blur-[60px]
+        opacity-100
+        pointer-events-none">
+      </div>
       <Navbar />
-      <div className="flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl rounded-3xl border border-white/70 bg-white/90 p-6 sm:p-10 shadow-2xl backdrop-blur">
+      <div className="flex min-w-0 items-center justify-center px-4 pt-28 pb-12">
+      <div className="w-full min-w-0 max-w-4xl rounded-3xl border border-white/70 bg-white/90 px-4 py-6 sm:p-10 shadow-2xl backdrop-blur">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
             <p className="text-xs font-semibold tracking-[0.18em] uppercase text-sky-500">
@@ -243,14 +261,17 @@ export default function Profile() {
                   <label htmlFor="location_preference" className="block text-xs font-medium text-slate-500 mb-1">
                     Preferred Location
                   </label>
-                  <input
-                    id="location_preference"
-                    name="location_preference"
-                    type="text"
+                  <LocationSearch
+                    placeholder="Preferred location"
                     value={form.location_preference}
-                    onChange={handleChange}
-                    className={inputBase}
-                    placeholder="e.g., South Mumbai, Bangalore North"
+                    onSelect={(location) => {
+                      setForm({
+                        ...form,
+                        location_preference: location.address,
+                        latitude: location.lat,
+                        longitude: location.lng,
+                      });
+                    }}
                   />
                 </div>
                 <div>
@@ -273,7 +294,7 @@ export default function Profile() {
               </div>
             </section>
 
-            {(message || error) && (
+            {(message || authError) && (
               <div
                 className={`rounded-md border px-4 py-3 text-sm ${
                   message
@@ -281,16 +302,17 @@ export default function Profile() {
                     : "border-red-200 bg-red-50 text-red-600"
                 }`}
               >
-                {message || error}
+                {message || authError}
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex flex-wrap items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setForm({ 
                   name: "", age: "", gender: "", phone: "", city: "", avatar_url: "",
-                  budget: "", location_preference: "", gender_preference: ""
+                  budget: "", location_preference: "", gender_preference: "",
+                  latitude: null, longitude: null
                 })}
                 className="rounded-md border border-slate-200 px-4 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100"
               >

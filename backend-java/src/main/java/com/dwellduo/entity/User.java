@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.messaging.simp.user.DestinationUserNameProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +25,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements UserDetails {
+public class User implements UserDetails, DestinationUserNameProvider {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,6 +89,50 @@ public class User implements UserDetails {
     @Builder.Default
     private Boolean profileCompleted = false;
 
+    @Column(columnDefinition = "text")
+    private String location;
+
+    /**
+     * Extract latitude from location POINT string
+     * POINT format: "POINT(longitude latitude)"
+     * Defensive: never throws (handles non-String location from DB or parse errors).
+     */
+    public Double getLatitude() {
+        try {
+            if (location == null) return null;
+            String loc = location instanceof String ? (String) location : String.valueOf(location);
+            if (loc.isEmpty()) return null;
+            String coords = loc.replace("POINT(", "").replace(")", "");
+            String[] parts = coords.trim().split("\\s+");
+            if (parts.length >= 2) {
+                return Double.parseDouble(parts[1]); // latitude is second
+            }
+        } catch (Exception ignored) {
+            // return null on any parse or type error
+        }
+        return null;
+    }
+
+    /**
+     * Extract longitude from location POINT string
+     * POINT format: "POINT(longitude latitude)"
+     * Defensive: never throws.
+     */
+    public Double getLongitude() {
+        try {
+            if (location == null) return null;
+            String loc = location instanceof String ? (String) location : String.valueOf(location);
+            if (loc.isEmpty()) return null;
+            String coords = loc.replace("POINT(", "").replace(")", "");
+            String[] parts = coords.trim().split("\\s+");
+            if (parts.length >= 2) {
+                return Double.parseDouble(parts[0]); // longitude is first
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
     // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // private UserPreference preferences;
 
@@ -117,6 +162,9 @@ public class User implements UserDetails {
     // Spring Security UserDetails Implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        }
         return Collections.singletonList(
             new SimpleGrantedAuthority("ROLE_" + role.name())
         );
@@ -131,6 +179,15 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    /**
+     * Used by Spring WebSocket to resolve /user/queue/* destinations so that
+     * convertAndSendToUser(userId, ...) delivers to this user's session.
+     */
+    @Override
+    public String getDestinationUserName() {
+        return id != null ? id.toString() : "";
     }
 
     @Override

@@ -28,7 +28,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-    out-of-order: false  # Disable after cleanup
+    out-of-order: true  # Allow out-of-order migrations
     clean-disabled: false  # Allow flyway:clean command
     locations: classpath:db/migration
     

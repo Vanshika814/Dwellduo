@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Preferences from "./pages/Preferences";
 import Game from "./pages/Game";
 import Matches from "./pages/Matches";
+import Chat from "./pages/Chat";
 import ImageUploadExample from "./pages/ImageUploadExample";
 
 export default function App() {
@@ -44,6 +45,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Matches />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <Chat />
           </ProtectedRoute>
         }
       />

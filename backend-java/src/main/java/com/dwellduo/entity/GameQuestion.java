@@ -30,20 +30,24 @@ public class GameQuestion {
     @Column(nullable = false)
     private QuestionType type;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "option_a")
     private String optionA;
+
+    @Column(name = "option_a_image_url")
+    private String optionAImageUrl;
 
     @Column(name = "option_b")
     private String optionB;
 
+    @Column(name = "option_b_image_url")
+    private String optionBImageUrl;
+
     @Column(name = "option_c")
     private String optionC;
 
-    @Column(name = "option_d")
-    private String optionD;
+    @Column(name = "option_c_image_url")
+    private String optionCImageUrl;
+
 
     @Column(name = "is_active")
     @Builder.Default

@@ -1,5 +1,6 @@
 package com.dwellduo.controller;
 
+import com.dwellduo.config.StompUserPrincipal;
 import com.dwellduo.dto.MessageDto;
 import com.dwellduo.entity.User;
 import com.dwellduo.service.MessageService;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,6 +24,13 @@ public class WebSocketMessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageService messageService;
 
+    private static User getUser(Authentication authentication) {
+        Object principal = authentication != null ? authentication.getPrincipal() : null;
+        if (principal instanceof StompUserPrincipal p) return p.user();
+        if (principal instanceof User u) return u;
+        return null;
+    }
+
     /**
      * Send private message to specific user
      */
@@ -33,7 +40,8 @@ public class WebSocketMessageController {
             Authentication authentication
     ) {
         try {
-            User sender = (User) authentication.getPrincipal();
+            User sender = getUser(authentication);
+            if (sender == null) return;
             log.info("WebSocket message from {} to {}", sender.getId(), messageDto.getReceiverId());
 
             // Save message to database
@@ -64,7 +72,8 @@ public class WebSocketMessageController {
     @MessageMapping("/chat.connect")
     @SendTo("/topic/user.connect")
     public String userConnect(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        User user = getUser(authentication);
+        if (user == null) return "Unknown user connected";
         log.info("User connected via WebSocket: {}", user.getId());
         return "User " + user.getName() + " connected";
     }
@@ -75,7 +84,8 @@ public class WebSocketMessageController {
     @MessageMapping("/chat.disconnect")
     @SendTo("/topic/user.disconnect")
     public String userDisconnect(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        User user = getUser(authentication);
+        if (user == null) return "Unknown user disconnected";
         log.info("User disconnected from WebSocket: {}", user.getId());
         return "User " + user.getName() + " disconnected";
     }
@@ -88,7 +98,8 @@ public class WebSocketMessageController {
             @Payload Long receiverId,
             Authentication authentication
     ) {
-        User sender = (User) authentication.getPrincipal();
+        User sender = getUser(authentication);
+        if (sender == null || receiverId == null) return;
         messagingTemplate.convertAndSendToUser(
                 receiverId.toString(),
                 "/queue/typing",

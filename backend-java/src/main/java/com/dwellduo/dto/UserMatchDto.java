@@ -29,6 +29,7 @@ public class UserMatchDto {
     private Boolean mutualMatch;
     private LocalDateTime matchedAt;
     private LocalDateTime createdAt;
+    private Double distance; // Distance in kilometers
 }
 
 

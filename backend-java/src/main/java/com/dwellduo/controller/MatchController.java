@@ -5,6 +5,7 @@ import com.dwellduo.dto.UserMatchDto;
 import com.dwellduo.entity.User;
 import com.dwellduo.job.MatchCalculationJob;
 import com.dwellduo.service.MatchingService;
+import com.dwellduo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class MatchController {
 
     private final MatchingService matchingService;
     private final MatchCalculationJob matchCalculationJob;
-
+    private final UserService userService;
     /**
      * Get all matches for current user
      */
@@ -57,6 +58,16 @@ public class MatchController {
         List<UserMatchDto> matches = matchingService.getMutualMatches(user.getId());
         return ResponseEntity.ok(ApiResponse.success(matches));
     }
+    @GetMapping("/nearby")
+    public ResponseEntity<ApiResponse<List<UserMatchDto>>> findNearby(
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam(defaultValue = "10000") double radius
+    ) {
+        List<UserMatchDto> matches = userService.findNearbyUsers(lat, lng, radius);
+        return ResponseEntity.ok(ApiResponse.success(matches));
+    }
+
 
     /**
      * Like/Unlike a match

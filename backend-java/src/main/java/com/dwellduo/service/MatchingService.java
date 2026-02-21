@@ -78,6 +78,18 @@ public class MatchingService {
                 .map(match -> mapToDto(match, userId))
                 .collect(Collectors.toList());
     }
+    public List<UserDto> findNearbyUsers(double lat, double lng, double radius) {
+        List<Object[]> results = userRepository.findNearbyUsers(lat, lng, radius);
+        return results.stream()
+                .map(row -> {
+                    Long userId = ((Number) row[0]).longValue();
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+                    return mapUserToDto(user);
+                })
+                .toList();
+    }
+    
 
     /**
      * Like/Unlike a match

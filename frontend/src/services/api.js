@@ -11,13 +11,42 @@ const api = axios.create({
   },
 });
 
+// Helper function to check if token is expired
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiryTime = payload.exp * 1000; // Convert to milliseconds
+    return Date.now() >= expiryTime;
+  } catch (e) {
+    return true;
+  }
+};
+
+// Helper function to logout and redirect
+const logoutUser = () => {
+  console.log('🚪 Token expired - logging out...');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  window.location.href = '/login';
+};
+
 // Request interceptor to add JWT token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+    
+    // Check if token exists and is valid
     if (token) {
+      // If token is expired, logout immediately
+      if (isTokenExpired(token)) {
+        logoutUser();
+        return Promise.reject(new Error('Token expired'));
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
     return config;
   },
   (error) => {
@@ -31,28 +60,44 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // If token expired, try to refresh
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // If unauthorized (401 or 403), try to refresh
+    if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
+        
+        // If no refresh token, logout immediately
+        if (!refreshToken || isTokenExpired(refreshToken)) {
+          logoutUser();
+          return Promise.reject(new Error('No valid refresh token'));
+        }
+
+        console.log('🔄 Attempting token refresh...');
         const response = await axios.post(`${API_BASE_URL}/auth/refresh`, null, {
           params: { refreshToken },
         });
 
-        const { accessToken } = response.data.data;
+        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
         localStorage.setItem('accessToken', accessToken);
+        if (newRefreshToken) {
+          localStorage.setItem('refreshToken', newRefreshToken);
+        }
 
+        console.log('✅ Token refreshed successfully');
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
+        console.error('❌ Token refresh failed:', refreshError);
         // Refresh failed, logout user
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        logoutUser();
         return Promise.reject(refreshError);
       }
+    }
+
+    // If error is 401/403 and we already tried refresh, logout
+    if ((error.response?.status === 401 || error.response?.status === 403) && originalRequest._retry) {
+      logoutUser();
     }
 
     return Promise.reject(error);
@@ -299,5 +344,18 @@ export const createWebSocketConnection = (token) => {
   
   return WS_URL;
 };
+
+// Check token validity on app load
+if (typeof window !== 'undefined') {
+  const token = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  
+  // If access token is expired but we have a refresh token, that's ok (will refresh on next request)
+  // If both are expired, logout immediately
+  if (token && isTokenExpired(token) && (!refreshToken || isTokenExpired(refreshToken))) {
+    console.log('🚪 Both tokens expired on page load - logging out...');
+    logoutUser();
+  }
+}
 
 export default api;

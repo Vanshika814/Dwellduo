@@ -115,19 +115,18 @@ public class GameService {
         if (question.getOptionC() != null && !question.getOptionC().isEmpty()) {
             options.add(question.getOptionC());
         }
-        if (question.getOptionD() != null && !question.getOptionD().isEmpty()) {
-            options.add(question.getOptionD());
-        }
+        
         
         return GameQuestionDto.builder()
                 .id(question.getId())
                 .question(question.getQuestion())
                 .type(question.getType())
-                .imageUrl(question.getImageUrl())
                 .optionA(question.getOptionA())
+                .optionAImageUrl(question.getOptionAImageUrl())
                 .optionB(question.getOptionB())
+                .optionBImageUrl(question.getOptionBImageUrl())
                 .optionC(question.getOptionC())
-                .optionD(question.getOptionD())
+                .optionCImageUrl(question.getOptionCImageUrl())
                 .isActive(question.getIsActive())
                 .weight(question.getWeight())
                 .category(question.getCategory())

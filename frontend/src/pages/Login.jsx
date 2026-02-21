@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
+import { fetchUserProfile, setAuth } from "../store/slices/authSlice";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -9,6 +11,7 @@ export default function Login() {
     password: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -32,8 +35,11 @@ export default function Login() {
       if (accessToken && refreshToken) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+
+        // Immediately update auth state so Navbar reacts without refresh
+        dispatch(setAuth(true));
+        dispatch(fetchUserProfile());
       }
-      alert("Logged in successfully!");
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -44,7 +50,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-sky-50">
       <Navbar />
-      <div className="flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center px-4 pt-28 pb-12">
         <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 bg-white/90 border border-slate-200 rounded-2xl p-8 shadow-xl"

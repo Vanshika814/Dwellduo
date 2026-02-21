@@ -1,6 +1,7 @@
 package com.dwellduo.service;
 
 import com.dwellduo.dto.UserDto;
+import com.dwellduo.dto.UserMatchDto;
 import com.dwellduo.entity.User;
 import com.dwellduo.exception.ResourceNotFoundException;
 import com.dwellduo.repository.UserRepository;
@@ -26,13 +27,32 @@ public class UserService {
     private final UserRepository userRepository;
 
     /**
-     * Get user by ID
+     * Get user by ID. Returns minimal DTO on any error so callers (e.g. Chat) never get 500.
+     * Cache disabled to avoid 500s from cache serialization/deserialization of complex DTOs.
      */
-    @Cacheable(value = "users", key = "#id")
     public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-        return mapToDto(user);
+        User user = null;
+        try {
+            user = userRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+            return mapToDto(user);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("getUserById({}) failed, returning minimal DTO: {}", id, e.getMessage());
+            if (user != null) {
+                return UserDto.builder()
+                        .id(user.getId())
+                        .email(user.getEmail() != null ? user.getEmail() : "user" + id + "@dwellduo.local")
+                        .name(user.getName() != null ? user.getName() : "User " + id)
+                        .build();
+            }
+            return UserDto.builder()
+                    .id(id)
+                    .email("user" + id + "@dwellduo.local")
+                    .name("User " + id)
+                    .build();
+        }
     }
 
     /**
@@ -60,7 +80,14 @@ public class UserService {
         if (userDto.getBudget() != null) user.setBudget(userDto.getBudget());
         if (userDto.getLocationPreference() != null) user.setLocationPreference(userDto.getLocationPreference());
         if (userDto.getGenderPreference() != null) user.setGenderPreference(userDto.getGenderPreference());
-    
+        if (userDto.getLatitude() != null && userDto.getLongitude() != null) {
+            String point = String.format(
+                "POINT(%f %f)",
+                userDto.getLongitude(),
+                userDto.getLatitude()
+            );
+            user.setLocation(point);
+        }
         return mapToDto(userRepository.save(user));
     }
 
@@ -107,6 +134,14 @@ public class UserService {
         if (userDto.getBudget() != null) user.setBudget(userDto.getBudget());
         if (userDto.getLocationPreference() != null) user.setLocationPreference(userDto.getLocationPreference());
         if (userDto.getGenderPreference() != null) user.setGenderPreference(userDto.getGenderPreference());
+        if (userDto.getLatitude() != null && userDto.getLongitude() != null) {
+            String point = String.format(
+                "POINT(%f %f)",
+                userDto.getLongitude(),
+                userDto.getLatitude()
+            );
+            user.setLocation(point);
+        }
 
         User savedUser = userRepository.save(user);
         log.info("Updated user profile: {}", savedUser.getId());
@@ -155,6 +190,27 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Find nearby users within radius (in meters)
+     */
+    public List<UserMatchDto> findNearbyUsers(double lat, double lng, double radiusMeters) {
+        List<Object[]> results = userRepository.findNearbyUsers(lat, lng, radiusMeters);
+
+        return results.stream().map(row -> {
+            Long userId = ((Number) row[0]).longValue();
+            Double distanceMeters = ((Number) row[1]).doubleValue();
+            
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+            return UserMatchDto.builder()
+                    .id(user.getId())
+                    .matchedUser(mapToDto(user))
+                    .distance(distanceMeters / 1000) // convert to km
+                    .build();
+        }).toList();
+    }
+
     // Mapper methods
     private UserDto mapToDto(User user) {
         return UserDto.builder()
@@ -180,6 +236,8 @@ public class UserService {
                 .profileCompleted(user.getProfileCompleted())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .latitude(user.getLatitude())
+                .longitude(user.getLongitude())
                 .build();
     }
 }

@@ -42,7 +42,7 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-sky-50">
       <Navbar />
-      <div className="flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center px-4 pt-28 pb-12">
         <div className="w-full max-w-md">
         <div className="bg-white/90 border border-slate-200 rounded-2xl shadow-2xl p-6 sm:p-8">
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-2 text-center">

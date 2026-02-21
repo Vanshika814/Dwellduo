@@ -118,7 +118,7 @@ export default function ImageUpload({ currentImage, onUploadSuccess, className =
           </label>
           
           {image && (
-            <div className="mt-2 flex gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               <button
                 onClick={handleUpload}
                 disabled={uploading}

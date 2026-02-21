@@ -39,9 +39,10 @@ public class GameQuestionDto {
     @JsonIgnore
     private String optionC;
     
-    @JsonIgnore
-    private String optionD;
-    
+    private String optionAImageUrl;
+    private String optionBImageUrl;
+    private String optionCImageUrl;
+
     private Boolean isActive;
     private Integer weight;
     private String category;
