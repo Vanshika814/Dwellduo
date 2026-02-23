@@ -1,170 +1,91 @@
-# DwellDuo 🚀
+# 🧠 DwellDuo: A Comprehensive roommate finding Platform
+DwellDuo is a cutting-edge matching platform designed to connect individuals based on their preferences, interests, and compatibility. The platform utilizes a robust backend infrastructure built with Spring Boot and a sleek frontend interface crafted with React, ensuring a seamless user experience. With its advanced features and intuitive design, DwellDuo aims to revolutionize the way people connect and interact with each other.
 
-This project is a Roommate/Buddy Finder . It aims to find you a roommate/Flatmate/Buddy in a completely new city. It provides a comprehensive solution for people who gets shifted to a new city for work/ studies.
-
-## ✨ Key Features
-
-- **User Authentication**: Secure user registration, login, and authentication using [**Mention authentication method, e.g., JWT, Laravel Sanctum**].
-- **Database Management**: Efficient data storage and retrieval using [**Mention database and ORM, e.g., MySQL and Eloquent**].
-- **API Endpoints**: Well-defined API endpoints for seamless communication between frontend and backend.
-- **Background Jobs**: Asynchronous task processing using [**Mention queue system, e.g., Laravel Queue**] for improved performance.
-- **User Preferences**: Customizable user settings and preferences stored in the database.
-- **Email Verification**: Ensures user email addresses are valid and verified.
-- **Real-time Messaging**: Enables real-time communication between users.
-- **User Matching**: Facilitates matching users based on specified criteria.
-- **Personal Access Tokens**: Securely manage API access using personal access tokens.
-- **Caching**: Implements caching mechanisms to improve application speed and reduce database load.
+## 🚀 Features
+- **User Registration and Login**: Secure registration and login functionality, allowing users to create profiles and access the platform.
+- **Profile Management**: Users can edit and manage their profiles, including adding profile pictures, bio, and interests.
+- **Matching Algorithm**: A sophisticated matching algorithm that suggests compatible matches based on user preferences and interests.
+- **Real-time Chat**: A real-time chat feature that enables users to communicate with each other.
+- **Location-based Matching**: Users can search for matches based on location, making it easier to find compatible individuals in their area.
+- **Compatibility Scores**: The platform provides compatibility scores, giving users an idea of how well they match with other users.
 
 ## 🛠️ Tech Stack
+- **Frontend**: React, React Router, Redux, Tailwind CSS
+- **Backend**: Spring Boot, Java
+- **Database**: MySQL
+- **API**: RESTful API
+- **Build Tool**: Vite
+- **Dependencies**: Axios, React Hot Toast, Lucide React
 
-| Category    | Technology                       | Description                                                                 |
-| :---------- | :------------------------------- | :-------------------------------------------------------------------------- |
-| **Backend**   | PHP                              | Server-side scripting language                                              |
-|             | Laravel                          | PHP framework for web application development                               |
-| **Database**  | MySQL                            | Relational database management system                                       |
-| **Frontend**  | [**Specify Frontend Tech**]      | [**Describe Frontend Tech**]                                                |
-| **API**       | RESTful API                      | Architectural style for building web services                               |
-| **Authentication**| [**Specify Auth Tech**]      | [**Describe Auth Tech**]                                                |
-| **Queue**     | [**Specify Queue Tech**]         | [**Describe Queue Tech**]                                                   |
-| **Middleware**| PHP Middlewares                  | HTTP request filtering                                                      |
-| **Dependency Management** | Composer                       | PHP dependency manager                                                      |
-| **Other**     | JSON                             | Data-interchange format                                                     |
+## 📦 Installation
+To get started with the project, follow these steps:
+1. Clone the repository using `git clone`.
+2. Install the dependencies using `npm install` or `yarn install`.
+3. Start the development server using `npm run dev` or `yarn dev`.
+4. Access the platform by navigating to `http://localhost:3000` in your web browser.
 
-## 📦 Getting Started
-
-Follow these instructions to get the project up and running on your local machine.
-
-### Prerequisites
-
-- PHP >= 8.1
-- Composer
-- MySQL
-
-### Installation
-
-1.  Clone the repository:
-
-    ```bash
-    git clone [repository_url]
-    cd [project_directory]
-    ```
-
-2.  Install PHP dependencies using Composer:
-
-    ```bash
-    composer install
-    ```
-
-3.  Copy the `.env.example` file to `.env` and configure your database settings:
-
-    ```bash
-    cp .env.example .env
-    ```
-
-    Edit the `.env` file with your database credentials:
-
-    ```
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=[your_database_name]
-    DB_USERNAME=[your_database_username]
-    DB_PASSWORD=[your_database_password]
-    ```
-
-4.  Generate an application key:
-
-    ```bash
-    php artisan key:generate
-    ```
-
-5.  Run database migrations:
-
-    ```bash
-    php artisan migrate
-    ```
-
-6.  Seed the database (optional):
-
-    ```bash
-    php artisan db:seed
-    ```
-
-### Running Locally
-
-1.  Start the Laravel development server:
-
-    ```bash
-    php artisan serve
-    ```
-
-    This will start the server at `http://localhost:8000`.
-
-2.  [**Add instructions for running the frontend, if applicable**]
+## 💻 Usage
+1. Register for an account by providing the required information.
+2. Log in to your account using your credentials.
+3. Complete your profile by adding a profile picture, bio, and interests.
+4. Search for matches based on location, interests, or compatibility scores.
+5. Initiate conversations with compatible matches using the real-time chat feature.
 
 ## 📂 Project Structure
-
-```
-[project_directory]/
-├── backend/
-│   ├── app/
-│   │   ├── Http/
-│   │   │   ├── Controllers/
-│   │   │   ├── Middleware/
-│   │   │   ├── Requests/
-│   │   ├── Models/
-│   │   ├── Providers/
-│   ├── database/
-│   │   ├── migrations/
-│   │   │   ├── 0001_01_01_000000_create_users_table.php
-│   │   │   ├── 0001_01_01_000001_create_cache_table.php
-│   │   │   ├── 0001_01_01_000002_create_jobs_table.php
-│   │   │   ├── 2025_12_03_061600_create_personal_access_tokens_table.php
-│   │   │   ├── 2025_12_03_073531_create_user_preferences_table.php
-│   │   │   ├── 2025_12_03_073634_create_user_matches_table.php
-│   │   │   ├── 2025_12_03_073657_create_messages_table.php
-│   │   ├── seeders/
-│   │   │   ├── DatabaseSeeder.php
-│   ├── routes/
-│   │   ├── api.php
-│   │   ├── web.php
-│   ├── composer.json
-│   ├── artisan
-├── [frontend_directory]/
-│   ├── [frontend_files]
-├── .env
-├── README.md
+```markdown
+frontend/
+├── public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── store/
+│   ├── App.jsx
+│   ├── index.jsx
+│   ├── main.jsx
+├── package.json
+├── vite.config.js
+backend-java/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── com/
+│   │   │   │   ├── dwellduo/
+│   │   │   │   │   ├── DwellDuoApplication.java
+│   │   │   │   │   ├── controller/
+│   │   │   │   │   ├── service/
+│   │   │   │   │   ├── repository/
+│   │   │   │   │   ├── model/
+│   │   │   │   │   ├── config/
+│   │   │   │   │   ├── security/
+│   │   │   │   │   ├── util/
+│   │   │   │   │   ├── exception/
+│   │   │   │   │   ├── dto/
+│   │   ├── resources/
+│   │   │   ├── application.properties
+│   │   │   ├── application.yml
+│   │   ├── test/
+│   │   │   ├── java/
+│   │   │   │   ├── com/
+│   │   │   │   │   ├── dwellduo/
+│   │   │   │   │   │   ├── DwellDuoApplicationTests.java
+│   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   ├── security/
+│   │   │   │   │   │   ├── util/
+│   │   │   │   │   │   ├── exception/
+│   │   │   │   │   │   ├── dto/
+├── pom.xml
 ```
 
 ## 📸 Screenshots
 
-![frontend](https://github.com/user-attachments/assets/21a0ffaf-28ad-4877-9213-6495a4967545)
-![frontend · 3 33am · 02-14](https://github.com/user-attachments/assets/36abc939-004b-4df5-99aa-13a815a4d023)
-![frontend · 3 32am · 02-14](https://github.com/user-attachments/assets/d0eb6345-18cb-47e9-90c9-1d5fbafcf360)
-
 
 ## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix.
-3.  Make your changes and commit them with descriptive commit messages.
-4.  Push your changes to your fork.
-5.  Submit a pull request.
+Contributions are welcome and appreciated. To contribute, please fork the repository, make your changes, and submit a pull request.
 
 ## 📝 License
-
-This project is licensed under the [**Specify License, e.g., MIT License**] - see the `LICENSE` file for details.
-
-## 📬 Contact
-
-Vanshika Agarwal - vanshikaagarwal781@gmail.com
-
-## 💖 Thanks
-
-Thanks for checking out this project! We hope you find it useful.
-
-This is written by [readme.ai](https://readme-generator-phi.vercel.app/).
-
-
+This project is licensed under the MIT License.
