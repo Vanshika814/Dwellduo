@@ -4,9 +4,9 @@ spring:
     
   # Database Configuration (PostgreSQL)
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://db.sdstoofdwtawwigomnya.supabase.co:5432/postgres
+    username: postgres
+    password: Maccyy@#1234
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -63,27 +63,27 @@ spring:
       
 # Server Configuration
 server:
-  port: ${PORT:8080}
+  port: ${SERVER_PORT:8080}
   error:
     include-message: always
     include-binding-errors: always
     
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}  # 24 hours in milliseconds
-  refresh-expiration: ${JWT_REFRESH_EXPIRATION}  # 7 days
+  secret: ${JWT_SECRET:your-secret-key-change-in-production-make-it-long-and-secure}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 hours in milliseconds
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days
   
 # Cloudinary Configuration
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME}
-  api-key: ${CLOUDINARY_API_KEY}
-  api-secret: ${CLOUDINARY_API_SECRET}
-  upload-folder: ${CLOUDINARY_UPLOAD_FOLDER}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:dgfirvf4b}
+  api-key: ${CLOUDINARY_API_KEY:797317251744685}
+  api-secret: ${CLOUDINARY_API_SECRET:7SogiW_8BY44qdNJr0Ivt_jYSXY}
+  upload-folder: ${CLOUDINARY_UPLOAD_FOLDER:dwellduo/profile_images}
   
 # CORS Configuration
 cors:
-  allowed-origins: ${CORS_ORIGINS}
+  allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
   allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
   allowed-headers: "*"
   allow-credentials: true
