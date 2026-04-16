@@ -17,7 +17,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Create non-root user
-RUN groupadd -S spring && useradd -S -g spring spring
+RUN groupadd -r spring && useradd -r -g spring spring
 USER spring:spring
 
 # Copy JAR from build stage
