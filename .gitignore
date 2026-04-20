@@ -1,0 +1,3 @@
+reset_mysql_password.sh
+test_mysql_password.sh
+START_LOCAL.sh
